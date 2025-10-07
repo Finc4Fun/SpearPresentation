@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spear AI Services - CDAO GIDE Presentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .grid-overlay {
+            background-image: 
+                linear-gradient(rgba(0, 212, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        .slide-content {
+            transition: opacity 0.3s ease-out;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .animate-pulse-custom {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.7; }
+            100% { transform: scale(0.95); opacity: 1; }
+        }
+        .sensor-pulse {
+            animation: pulse-ring 2s ease-in-out infinite;
+        }
+        .impact-box:hover {
+            transform: scale(1.02);
+        }
+        .tech-card:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950">
+    <div id="presentation" class="relative w-screen h-screen overflow-hidden">
+        <!-- Grid Overlay -->
+        <div class="absolute inset-0 opacity-10 grid-overlay pointer-events-none"></div>
+
+        <!-- Spear AI Logo - Always visible -->
+        <div class="fixed top-6 right-24 z-30">
+            <img src="https://avatars.githubusercontent.com/u/89326455?s=200&v=4" alt="Spear AI" 
+                 class="h-16 w-16 rounded-lg shadow-lg shadow-cyan-400/20 border-2 border-cyan-500/30">
+        </div>
+
+        <!-- CDAO Logo - Conditional -->
+        <div id="cdaoLogo" class="fixed top-6 left-24 z-30 hidden">
+            <img src="https://media.licdn.com/dms/image/v2/D4E0BAQHY3FTfoTbc9A/company-logo_200_200/company-logo_200_200/0/1690826329854/dod_chief_digital_and_artificial_intelligence_office_logo?e=1762992000&v=beta&t=6cd4Xzso1NnB6xgJR4i97Gkm1hq4WOGGaxedRWfKSF4" 
+                 alt="CDAO" 
+                 class="h-16 w-16 rounded-lg shadow-lg shadow-cyan-400/20 border-2 border-cyan-500/30 bg-white p-1">
+        </div>
+
+        <!-- Hamburger Menu Button -->
+        <button id="menuBtn" class="fixed top-6 left-6 z-50 p-3 bg-slate-800/90 hover:bg-slate-700 rounded-lg border border-cyan-500/30 hover:border-cyan-400 transition-all duration-300 shadow-lg hover:shadow-cyan-400/20">
+            <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+        </button>
+
+        <!-- Navigation Menu -->
+        <div id="navMenu" class="fixed inset-0 z-40 hidden">
+            <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeMenu()"></div>
+            <div class="absolute left-0 top-0 h-full w-96 bg-gradient-to-b from-slate-900 to-slate-950 shadow-2xl border-r border-cyan-500/30 overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-bold text-white">Navigation</h3>
+                        <button onclick="closeMenu()" class="p-2 hover:bg-slate-800 rounded-lg transition-colors">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="navList" class="space-y-2"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notes Button -->
+        <button id="notesBtn" class="fixed bottom-6 right-6 z-50 p-4 bg-slate-800/90 hover:bg-slate-700 rounded-lg border border-cyan-500/30 hover:border-cyan-400 transition-all duration-300 shadow-lg hover:shadow-cyan-400/20">
+            <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+        </button>
+
+        <!-- Notes Panel -->
+        <div id="notesPanel" class="fixed inset-0 z-40 hidden">
+            <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeNotes()"></div>
+            <div class="absolute right-0 top-0 h-full w-2/5 bg-gradient-to-b from-slate-900 to-slate-950 shadow-2xl border-l border-cyan-500/30 overflow-y-auto">
+                <div class="p-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">Speaker Notes</h3>
+                            <p id="notesCounter" class="text-sm text-cyan-400 mt-1"></p>
+                        </div>
+                        <button onclick="closeNotes()" class="p-2 hover:bg-slate-800 rounded-lg transition-colors">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="bg-slate-800/40 p-6 rounded-lg border border-cyan-500/20">
+                        <p id="notesContent" class="text-gray-200 leading-relaxed"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide Counter -->
+        <div id="slideCounter" class="fixed bottom-6 left-6 z-30 px-4 py-2 bg-slate-800/90 rounded-lg border border-cyan-500/30 text-cyan-400 font-mono text-sm"></div>
+
+        <!-- Main Slide Content -->
+        <div id="slideContent" class="relative h-full flex items-center justify-center cursor-pointer slide-content" onclick="nextSlide()">
+            <div class="w-full max-w-7xl"></div>
+        </div>
+
+        <!-- Navigation Arrows -->
+        <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 flex gap-4 z-30">
+            <button id="prevBtn" onclick="prevSlide(event)" class="p-3 rounded-lg transition-all duration-300 bg-slate-800/90 hover:bg-slate-700 text-cyan-400 border border-cyan-500/30 hover:border-cyan-400 shadow-lg hover:shadow-cyan-400/20">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+            <button id="nextBtn" onclick="nextSlide(event)" class="p-3 rounded-lg transition-all duration-300 bg-slate-800/90 hover:bg-slate-700 text-cyan-400 border border-cyan-500/30 hover:border-cyan-400 shadow-lg hover:shadow-cyan-400/20">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        
+        const slides = [
+            {
+                title: "Spear AI Services Support to CDAO GIDE",
+                subtitle: "October 2025 | 1-Hour Presentation",
+                type: "title",
+                notes: "Welcome, everyone. Today, we'll dive into how Spear AI Services supports the DoD's CDAO GIDE initiative, driving cutting-edge AI to empower our military. This is about real impact—making decisions faster and keeping our warfighters ahead. Let's get started."
+            },
+            {
+                title: "Agenda",
+                type: "list",
+                content: [
+                    "Overview of CDAO, GIDE, CJADC2 (15 min)",
+                    "Spear AI Services Mission & Expertise (5 min)",
+                    "Initial Involvement (5 min)",
+                    "Key Projects (5 min)",
+                    "Technologies & Services (5 min)",
+                    "Addressing Goals (5 min)",
+                    "Impacts (5 min)",
+                    "Collaboration Evolution (5 min)",
+                    "Value Proposition (5 min)",
+                    "Portfolio Fit (5 min)",
+                    "Innovations (5 min)",
+                    "Feedback (5 min)",
+                    "Future Plans (5 min)",
+                    "Commitment (5 min)",
+                    "Next Steps (5 min)",
+                    "Q&A"
+                ],
+                notes: "Here's our roadmap for the hour. We'll start with a deep dive into what CDAO, GIDE, and CJADC2 are—crucial context for those new to the DoD. Then, we'll walk through Spear AI Services' role, from our mission to our measurable wins and future plans. We'll wrap with Q&A. Let's begin with the big picture."
+            },
+            {
+                title: "Overview - CDAO",
+                type: "content",
+                showCDAOLogo: true,
+                content: [
+                    "Chief Digital and Artificial Intelligence Office (CDAO) under OUSD(R&E) in U.S. Department of Defense (DoD)",
+                    "Spearheads AI and data analytics for national security",
+                    "Hub for testing/deploying tools for faster military decisions"
+                ],
+                notes: "The CDAO is the DoD's nerve center for AI and data. Sitting under the Office of the Under Secretary of Defense for Research and Engineering, it's tasked with getting advanced tech into the hands of our military. Think of it as a lab that tests and rolls out tools to make decisions faster—whether it's spotting a threat or coordinating a response."
+            },
+            {
+                title: "CDAO Aims",
+                type: "content",
+                showCDAOLogo: true,
+                content: [
+                    "Fields CJADC2 capability to Joint Force"
+                ],
+                notes: "At its core, the CDAO is focused on delivering a game-changing capability called CJADC2 to the Joint Force—our Army, Navy, Air Force, Marines, and Space Force working as one. This is about wiring up the military for the 21st century, and we'll unpack what that means next."
+            },
+            {
+                title: "Overview - CJADC2",
+                type: "network",
+                showCDAOLogo: true,
+                content: [
+                    "Combined Joint All-Domain Command and Control (CJADC2): DoD strategy connecting all branches and allies",
+                    "Integrates sensors/data across domains for rapid responses",
+                    "Replaces manual processes with AI-driven real-time intelligence"
+                ],
+                notes: "CJADC2 is the DoD's vision to link every branch and our allies into one seamless network. Imagine satellites, radars, and drones feeding data instantly across land, sea, air, space, and cyber. It's about replacing slow, paper-based processes with AI that delivers real-time intel, so commanders can act before the enemy does."
+            },
+            {
+                title: "CDAO Role in CJADC2",
+                type: "content",
+                showCDAOLogo: true,
+                content: [
+                    "CDAO took over experiment series for CJADC2 fielding"
+                ],
+                notes: "The CDAO stepped up to lead the charge on CJADC2, running experiments to test and refine the tech needed to make this vision real. They're the ones ensuring these systems actually work in the chaos of the battlefield, not just in a PowerPoint."
+            },
+            {
+                title: "Overview - AC2A",
+                type: "content",
+                showCDAOLogo: true,
+                content: [
+                    "Advanced Command and Control Accelerator (AC2A) in CDAO",
+                    "Advances CJADC2 for U.S. military/allies",
+                    "Provides apps, data services, experimentation",
+                    "Focus: data integration, AI/ML, experiments for faster C2"
+                ],
+                notes: "Within CDAO, the Advanced Command and Control Accelerator—or AC2A—is the engine driving CJADC2 forward. It builds apps, manages data pipelines, and runs experiments to integrate AI and machine learning. The goal? Make command and control faster and more effective across the Joint Force and our allies."
+            },
+            {
+                title: "AC2A & GIDE",
+                type: "content",
+                showCDAOLogo: true,
+                content: [
+                    "AC2A parents GIDE"
+                ],
+                notes: "AC2A oversees GIDE, the testing ground where these ideas come to life. Think of AC2A as the strategic brain, and GIDE as the hands-on lab where we prove what works."
+            },
+            {
+                title: "Overview - GIDE",
+                type: "globe",
+                showCDAOLogo: true,
+                content: [
+                    "Global Information Dominance Experiments (GIDE): CDAO-led for strategic tech testing",
+                    "Originated at NORAD/NORTHCOM in Colorado",
+                    "Integrates global sensor data for real-time battlefield view",
+                    "Accelerates decisions, connects commands, detects threats via experiments",
+                    "Transferred to CDAO in late 2022 by DepSecDef Hicks"
+                ],
+                notes: "GIDE is where the rubber meets the road. Started at NORAD/NORTHCOM, it pulls data from global sensors—like satellites and underwater mics—to create a live battlefield picture. Since Deputy Secretary Hicks handed it to CDAO in 2022, GIDE's been testing tech to connect commands globally, speed up decisions, and catch every threat."
+            },
+            {
+                title: "GIDE Aims",
+                type: "gide-image",
+                showCDAOLogo: true,
+                content: [
+                    "Fields lasting CJADC2 capabilities; champions AI use cases for joint force"
+                ],
+                notes: "GIDE's mission is to deliver CJADC2 systems that stick—battle-tested tools that let the Joint Force dominate. It's also about proving AI's value, so every commander, from a ship captain to a general, can rely on it."
+            },
+            {
+                title: "Services Mission & Expertise",
+                type: "content",
+                content: [
+                    "Spear AI Services, rooted in Project Maven, empowers warfighters with AI/tech expertise",
+                    "Drives defense innovation via mission engineering/operational support",
+                    "Aligns with GIDE for information dominance/rapid decisions",
+                    "Project Maven Heritage..."
+                ],
+                notes: "Spear AI Services was born from Project Maven, a DoD AI trailblazer. Our mission? Empower warfighters with the best AI and tech expertise. We focus on mission engineering—designing solutions that fit real-world needs—and operational support, perfectly aligned with GIDE's push for faster, smarter decisions."
+            },
+            {
+                title: "Initial Involvement",
+                type: "content",
+                content: [
+                    "Joined GIDE 2023 as subcontractor under George Mason PPP",
+                    "Provides AI/operational expertise for tech integration",
+                    "Ripple effect: Feeds other services team opportunities"
+                ],
+                notes: "In 2023, we joined GIDE as a subcontractor under George Mason's public-private partnership. Our role was to bring AI and operational know-how to integrate cutting-edge tech. This wasn't just a gig—it opened doors for our services team to grow across the DoD."
+            },
+            {
+                title: "Key Projects & Initiatives",
+                type: "content",
+                content: [
+                    "Lead AI Integrator, Global Integration Leads, Mission Support for 18th Airborne Corps & INDOPACOM",
+                    "Identifies/tests/refines tech via experimentation for warfighter needs",
+                    "Example: Scale AI LLM Tool"
+                ],
+                notes: "We wear three hats in GIDE: Lead AI Integrator, Global Integration Leads, and Mission Support for the 18th Airborne Corps and INDOPACOM. We scout, test, and perfect tech through experiments, ensuring it solves real warfighter problems—like using Scale AI's LLM tool to boost decision-making."
+            },
+            {
+                title: "Technologies, Tools, & Services",
+                type: "tech-stack",
+                content: [
+                    "Integrates Palantir Foundry (data fusion), Anduril Lattice (edge autonomy), Scale AI LLM (modeling)",
+                    "Mission engineering: Workflow mapping, use case ID for AI/warfighter pairing",
+                    "Forces at play... Rory can tell more..."
+                ],
+                notes: "We bring tools like Palantir's Foundry for data fusion, Anduril's Lattice for edge autonomy, and Scale AI's LLM for advanced modeling. Our mission engineering maps workflows and pinpoints use cases, ensuring tech fits warfighter needs like a glove. Rory, our expert, can dive deeper."
+            },
+            {
+                title: "Addressing CDAO Goals",
+                type: "content",
+                content: [
+                    "Supports CJADC2 with custom workflows in Foundry/Lattice, unlocking data for defense",
+                    "Digitizes processes, enhances analysis, speeds decisions",
+                    "Experiments new tech for global command collaboration",
+                    "Strategic Objectives..."
+                ],
+                notes: "We fuel CJADC2 by building custom workflows in Foundry and Lattice, tapping into massive data sets. We digitize clunky processes, sharpen analysis, and cut decision times for leaders. Plus, we experiment with new tech to link commands worldwide, aligning with CDAO's strategic goals."
+            },
+            {
+                title: "Measurable Impacts",
+                type: "impact-boxes",
+                content: [
+                    "5 personnel drive >50% experiments in Jan exercise",
+                    "Introduced 11/17 techs with 18th Airborne",
+                    "Modernizes INDOPACOM data networks via AI",
+                    "Transitions Global Integration to Joint Force tool",
+                    "Story about counterpart contractor"
+                ],
+                notes: "Our five-person team punches above its weight, driving over half the experiments for GIDE's January exercise. We brought 11 of 17 techs to the 18th Airborne, modernized INDOPACOM's data networks with AI, and turned our Global Integration into a Joint Force tool. Unlike a competitor with 70 people—half unknown—we deliver."
+            },
+            {
+                title: "Evolution of Collaboration",
+                type: "timeline",
+                content: [
+                    "From 2023 subcontractor to embedded partner",
+                    "FSR support to INDOPACOM/18th ABC, real-time tool refining",
+                    "Set to grow in new year"
+                ],
+                notes: "Since 2023, we've gone from subcontractor to trusted partner, embedding with INDOPACOM and 18th Airborne to refine tools on the fly. Our Field Service Reps are in the thick of it, and we're poised for even bigger growth in 2026."
+            },
+            {
+                title: "Unique Value Proposition",
+                type: "content",
+                content: [
+                    "Deep warfighter understanding, pushes intel low for impact",
+                    "Lean team (pilots, JICOs, analysts) iterates fast, fights bureaucracy",
+                    "Unlike bloated contractors (e.g., 70 people, half unknown)",
+                    "Story about large defense contractor..."
+                ],
+                notes: "We get warfighters—our team of pilots, joint interface officers, and analysts pushes intel to the front lines. Unlike big contractors with 70-person teams where half are ghosts, our lean, flat crew moves fast, cuts red tape, and delivers real impact. One contractor's bloat showed us: mission focus wins."
+            },
+            {
+                title: "Fit Within Broader Portfolio",
+                type: "content",
+                content: [
+                    "First major contract, anchors IC expansion",
+                    "Drives AI/operational expertise across defense",
+                    "Guided by Field to Learn/Value/Scale",
+                    "Side note: 2 Spear AI capabilities experimented in 18th ABC exercise"
+                ],
+                notes: "GIDE was our first big win, setting the stage for growth in the intelligence community. It's the heart of our mission to deliver AI and operational expertise across defense, guided by our Field to Learn, Value, and Scale approach. Fun fact: two Spear AI tools were tested in the 18th Airborne's last exercise."
+            },
+            {
+                title: "Innovations & Lessons Learned",
+                type: "content",
+                content: [
+                    "Pioneered global planning tools for real-time cross-theater ops",
+                    "Lesson: Seamless data sharing critical, via iterative processes",
+                    "Many firsts (e.g., UK-US digital target sharing)"
+                ],
+                notes: "GIDE let us pioneer global planning tools, linking commands for real-time ops across theaters. We learned seamless data sharing is everything, built through iterative processes that deliver value. We also scored firsts, like digital UK-US target sharing—a game-changer."
+            },
+            {
+                title: "Testimonials & Feedback",
+                type: "content",
+                content: [
+                    "Supported foreign integration, AI adoption, kill chain closure, mission to 18th Airborne/INDOPACOM",
+                    "Earned Joint Force trust",
+                    "Very good company position..."
+                ],
+                notes: "We've supported foreign partners, AI adoption, faster kill chains, and missions for 18th Airborne and INDOPACOM. The Joint Force trusts us, and we're in a strong position to keep delivering for the DoD."
+            },
+            {
+                title: "Future Plans",
+                type: "content",
+                content: [
+                    "Scale via targeted contracts, leverage Tradewinds Award (CDAO Marketplace)",
+                    "Deliver AI/SME/tech innovation",
+                    "Focus: Concrete warfighter value via scalable solutions",
+                    "Deliberate client selection"
+                ],
+                notes: "We're scaling smart—chasing targeted contracts and leveraging our Tradewinds Award in CDAO's Marketplace for new tech. Our focus stays on delivering real value to warfighters with scalable solutions, and we're picky about our clients to keep that edge."
+            },
+            {
+                title: "Commitment to National Security",
+                type: "content",
+                content: [
+                    "IDs pain points, adapts tech for DoD, fields fast",
+                    "Quarterly training via exercises for tech-capable force",
+                    "Mission: Field to Learn/Value/Scale keeps warfighters ahead",
+                    "Discussion about Ben Hines..."
+                ],
+                notes: "We spot warfighter pain points, adapt tech fast, and get it to the field. Through quarterly exercises, we train a tech-ready force. Our Field to Learn, Value, and Scale mission keeps our military ahead. Ben Hines, one of our stars, embodies this commitment."
+            },
+            {
+                title: "Next Steps",
+                type: "content",
+                content: [
+                    "Pursue larger contracts for AI/tech expansion in CCMDs/IC",
+                    "Via experimentation/iterative approach, deliver high-impact capabilities",
+                    "Make DoD more lethal/responsive"
+                ],
+                notes: "Looking ahead, we're chasing bigger contracts to expand our AI and tech footprint in combatant commands and the intel community. Our iterative, experimental approach will keep delivering capabilities that make the DoD faster and deadlier."
+            },
+            {
+                title: "Q&A",
+                subtitle: "Thank you",
+                type: "title",
+                notes: "That's our story—Spear AI Services turning tech into battlefield wins for GIDE. Now, let's open it up for your questions. Thank you!"
+            }
+        ];
+
+        function renderSlide(index) {
+            const slide = slides[index];
+            const content = document.querySelector('#slideContent > div');
+            
+            // Show/hide CDAO logo
+            const cdaoLogo = document.getElementById('cdaoLogo');
+            if (slide.showCDAOLogo) {
+                cdaoLogo.classList.remove('hidden');
+            } else {
+                cdaoLogo.classList.add('hidden');
+            }
+            
+            // Update counter
+            document.getElementById('slideCounter').textContent = `${index + 1} / ${slides.length}`;
+            
+            // Update notes
+            document.getElementById('notesContent').textContent = slide.notes;
+            document.getElementById('notesCounter').textContent = `Slide ${index + 1} of ${slides.length}`;
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === slides.length - 1;
+            
+            if (index === 0) {
+                document.getElementById('prevBtn').classList.add('opacity-40', 'cursor-not-allowed');
+                document.getElementById('prevBtn').classList.remove('hover:bg-slate-700');
+            } else {
+                document.getElementById('prevBtn').classList.remove('opacity-40', 'cursor-not-allowed');
+                document.getElementById('prevBtn').classList.add('hover:bg-slate-700');
+            }
+            
+            if (index === slides.length - 1) {
+                document.getElementById('nextBtn').classList.add('opacity-40', 'cursor-not-allowed');
+                document.getElementById('nextBtn').classList.remove('hover:bg-slate-700');
+            } else {
+                document.getElementById('nextBtn').classList.remove('opacity-40', 'cursor-not-allowed');
+                document.getElementById('nextBtn').classList.add('hover:bg-slate-700');
+            }
+            
+            // Render slide content
+            if (slide.type === 'title') {
+                content.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-screen text-center px-16">
+                        <img src="https://avatars.githubusercontent.com/u/89326455?s=200&v=4" alt="Spear AI" 
+                             class="h-32 w-32 rounded-2xl shadow-2xl shadow-cyan-400/30 border-4 border-cyan-500/40 mb-12">
+                        <h1 class="text-6xl font-bold text-white mb-8 leading-tight">${slide.title}</h1>
+                        ${slide.subtitle ? `<p class="text-2xl text-cyan-400">${slide.subtitle}</p>` : ''}
+                    </div>
+                `;
+            } else if (slide.type === 'list') {
+                const items = slide.content.map(item => `
+                    <div class="flex items-start">
+                        <div class="w-2 h-2 bg-cyan-400 rounded-full mt-3 mr-4 flex-shrink-0"></div>
+                        <p class="text-xl text-gray-200">${item}</p>
+                    </div>
+                `).join('');
+                content.innerHTML = `
+                    <div class="px-20 py-16">
+                        <h2 class="text-5xl font-bold text-white mb-12">${slide.title}</h2>
+                        <div class="grid grid-cols-2 gap-6">${items}</div>
+                    </div>
+                `;
+            } else if (slide.type === 'network') {
+                const items = slide.content.map(item => `
+                    <div class="flex items-start">
+                        <div class="w-2 h-2 bg-cyan-400 rounded-full mt-3 mr-6 flex-shrink-0"></div>
+                        <p class="text-lg text-gray-200 leading-relaxed">${item}</p>
+                    </div>
+                `).join('');
+                content.innerHTML = `
+                    <div class="px-20 py-12">
+                        <h2 class="text-5xl font-bold text-white mb-8">${slide.title}</h2>
+                        <div class="flex gap-12 items-center">
+                            <div class="flex-1">
+                                <svg viewBox="0 0 400 300" class="w-full h-64">
+                                    <defs>
+                                        <radialGradient id="nodeGlow">
+                                            <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.8" />
+                                            <stop offset="100%" stop-color="#00d4ff" stop-opacity="0" />
+                                        </radialGradient>
+                                    </defs>
+                                    <circle cx="200" cy="150" r="30" fill="#0ea5e9" opacity="0.3" />
+                                    <circle cx="200" cy="150" r="20" fill="#00d4ff" />
+                                    <text x="200" y="155" text-anchor="middle" fill="white" font-size="12" font-weight="bold">HQ</text>
+                                    
+                                    ${[0, 72, 144, 216, 288].map((angle, i) => {
+                                        const rad = (angle * Math.PI) / 180;
+                                        const x = 200 + Math.cos(rad) * 100;
+                                        const y = 150 + Math.sin(rad) * 80;
+                                        const domains = ['Land', 'Sea', 'Air', 'Space', 'Cyber'];
+                                        return `
+                                            <line x1="200" y1="150" x2="${x}" y2="${y}" stroke="#00d4ff" stroke-width="2" opacity="0.4" />
+                                            <circle cx="${x}" cy="${y}" r="25" fill="url(#nodeGlow)" />
+                                            <circle cx="${x}" cy="${y}" r="15" fill="#1e3a5f" stroke="#00d4ff" stroke-width="2" />
+                                            <text x="${x}" y="${y + 5}" text-anchor="middle" fill="#00d4ff" font-size="10" font-weight="bold">${domains[i]}</text>
+                                        `;
+                                    }).join('')}
+                                </svg>
+                            </div>
+                            <div class="flex-1 space-y-6">${items}</div>
+                        </div>
+                    </div>
+                `;
+            } else if (slide.type === 'globe') {
+                const items = slide.content.map(item => `
+                    <div class="flex items-start">
+                        <div class="w-2 h-2 bg-cyan-400 rounded-full mt-3 mr-6 flex-shrink-0"></div>
+                        <p class="text-base text-gray-200 leading-relaxed">${item}</p>
+                    </div>
+                `).join('');
+                content.innerHTML = `
+                    <div class="px-20 py-12">
+                        <h2 class="text-5xl font-bold text-white mb-8">${slide.title}</h2>
+                        <div class="flex gap-12 items-center">
+                            <div class="flex-1">
+                                <svg viewBox="0 0 400 300" class="w-full h-64">
+                                    <defs>
+                                        <radialGradient id="globeGlow">
+                                            <stop offset="70%" stop-color="#0ea5e9" stop-opacity="0.3" />
+                                            <stop offset="100%" stop-color="#00d4ff" stop-opacity="0" />
+                                        </radialGradient>
+                                    </defs>
+                                    <circle cx="200" cy="150" r="80" fill="url(#globeGlow)" />
+                                    <circle cx="200" cy="150" r="70" fill="none" stroke="#00d4ff" stroke-width="2" opacity="0.6" />
+                                    
+                                    ${[-40, -20, 0, 20, 40].map(offset => 
+                                        `<ellipse cx="200" cy="${150 + offset}" rx="70" ry="${15 - Math.abs(offset) / 4}" fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.3" />`
+                                    ).join('')}
+                                    
+                                    ${[
+                                        { x: 150, y: 120 }, { x: 250, y: 130 }, { x: 180, y: 180 },
+                                        { x: 220, y: 170 }, { x: 200, y: 100 }, { x: 230, y: 150 }
+                                    ].map(point => `
+                                        <circle cx="${point.x}" cy="${point.y}" r="8" fill="#00d4ff" opacity="0.6" class="sensor-pulse" />
+                                        <circle cx="${point.x}" cy="${point.y}" r="3" fill="#ffffff" />
+                                    `).join('')}
+                                </svg>
+                            </div>
+                            <div class="flex-1 space-y-5">${items}</div>
+                        </div>
+                    </div>
+                `;
+            } else if (slide.type === 'gide-image') {
+                const items = slide.content.map(item => `
+                    <div class="flex items-start">
+                        <div class="w-2 h-2 bg-cyan-400 rounded-full mt-3 mr-6 flex-shrink-0"></div>
+                        <p class="text-2xl text-gray-200 leading-relaxed">${item}</p>
+                    </div>
+                `).join('');
+                content.innerHTML = `
+                    <div class="px-20 py-16">
+                        <h2 class="text-5xl font-bold text-white mb-12">${slide.title}</h2>
+                        <div class="flex gap-12 items-center">
+                            <div class="flex-1">
+                                <img src="https://media.licdn.com/dms/image/v2/D4E22AQGD_rJY6tlkmA/feedshare-shrink_800/feedshare-shrink_800/0/1717686617596?e=1762992000&v=beta&t=iF1y7qat0qJELczwOpiZ43IauP7hbpas1vZaq-aXDpE" 
+                                     alt="GIDE CDAO" 
+                                     class="w-full rounded-xl shadow-2xl shadow-cyan-400/30 border-2 border-cyan-500/30">
+                            </div>
+                            <div class="flex-1 space-y-6">${items}</div>
+                        </div>
+                    </div>
+                `;
+            } else if (slide.type === 'tech-stack') {
+                const items = slide.content.map(item => `
+                    <div class="flex items-start">
+                        <div class="w-2 h-2 bg-cyan-400 rounded-full mt-3 mr-6 flex-shrink-0"></div>
+                        <p class="text-lg text-gray-200 leading-relaxed">${item}</p>
+                    </div>
+                `).join('');
+                content.innerHTML = `
+                    <div class="px-20 py-16">
+                        <h2 class="text-5xl font-bold text-white mb-12">${slide.title}</h2>
+                        <div class="flex justify-around items-center h-64 mb-8">
+                            <div class="text-center">
+                                <div class="w-32 h-32 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-lg border-2 border-cyan-400/50 flex items-center justify-center mb-4 transition-transform tech-card">
+                                    <svg class="w-12 h-12 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
+                                    </svg>
+                                </div>
+                                <p class="text-cyan-400 font-bold">Palantir Foundry</p>
+                                <p class="text-gray-400 text-sm">Data Fusion</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-32 h-32 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-lg border-2 border-cyan-400/50 flex items-center justify-center mb-4 transition-transform tech-card">
+                                    <svg class="w-12 h-12 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                                    </svg>
+                                </div>
+                                <p class="text-cyan-400 font-bold">Anduril Lattice</p>
+                                <p class="text-gray-400 text-sm">Edge Autonomy</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-32 h-32 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-lg border-2 border-cyan-400/50 flex items-center justify-center mb-4 transition-transform tech-card">
+                                    <svg class="w-12 h-12 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                                    </svg>
+                                </div>
+                                <p class="text-cyan-400 font-bold">Scale AI LLM</p>
+                                <p class="text-gray-400 text-sm">AI Modeling</p>
+                            </div>
+                        </div>
+                        <div class="space-y-4">${items}</div>
+                    </div>
+                `;
+            } else if (slide.type === 'impact-boxes') {
+                const items = slide.content.map((item, idx) => `
+                    <div class="bg-gradient-to-r from-slate-800/60 to-slate-900/60 p-6 rounded-xl border-2 border-cyan-500/30 hover:border-cyan-400 transition-all impact-box flex items-center gap-6">
+                        <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-cyan-500/30 to-blue-500/30 rounded-lg border-2 border-cyan-400/50 flex items-center justify-center">
+                            <span class="text-2xl font-bold text-cyan-400">${idx + 1}</span>
+                        </div>
+                        <p class="text-xl text-gray-200 leading-relaxed flex-1">${item}</p>
+                    </div>
+                `).join('');
+                content.innerHTML = `
+                    <div class="px-20 py-16">
+                        <h2 class="text-5xl font-bold text-white mb-12">${slide.title}</h2>
+                        <div class="space-y-6">${items}</div>
+                    </div>
+                `;
+            } else if (slide.type === 'timeline') {
+                const items = slide.content.map(item => `
+                    <div class="flex items-start">
+                        <div class="w-2 h-2 bg-cyan-400 rounded-full mt-3 mr-6 flex-shrink-0"></div>
+                        <p class="text-lg text-gray-200 leading-relaxed">${item}</p>
+                    </div>
+                `).join('');
+                const timeline = [
+                    { year: '2023', label: 'Subcontractor', icon: '🤝' },
+                    { year: '2024', label: 'Embedded Partner', icon: '⚡' },
+                    { year: '2025', label: 'Trusted Advisor', icon: '🎯' },
+                    { year: '2026', label: 'Strategic Growth', icon: '🚀' }
+                ];
+                content.innerHTML = `
+                    <div class="px-20 py-16">
+                        <h2 class="text-5xl font-bold text-white mb-12">${slide.title}</h2>
+                        <div class="flex items-center justify-center h-64 mb-12">
+                            <div class="relative w-full max-w-3xl">
+                                <div class="absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500/30 via-cyan-400 to-cyan-500/30"></div>
+                                <div class="flex justify-between relative">
+                                    ${timeline.map(item => `
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500/30 to-blue-500/30 border-4 border-cyan-400 flex items-center justify-center text-2xl mb-4 transition-transform hover:scale-110">
+                                                ${item.icon}
+                                            </div>
+                                            <p class="text-cyan-400 font-bold mb-1">${item.year}</p>
+                                            <p class="text-gray-300 text-sm text-center">${item.label}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">${items}</div>
+                    </div>
+                `;
+            } else {
+                const items = slide.content.map(item => `
+                    <div class="flex items-start">
+                        <div class="w-2 h-2 bg-cyan-400 rounded-full mt-3 mr-6 flex-shrink-0"></div>
+                        <p class="text-xl text-gray-200 leading-relaxed">${item}</p>
+                    </div>
+                `).join('');
+                content.innerHTML = `
+                    <div class="px-20 py-16">
+                        <h2 class="text-5xl font-bold text-white mb-12">${slide.title}</h2>
+                        <div class="space-y-6">${items}</div>
+                    </div>
+                `;
+            }
+        }
+
+        function nextSlide(event) {
+            if (event) event.stopPropagation();
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                renderSlide(currentSlide);
+            }
+        }
+
+        function prevSlide(event) {
+            if (event) event.stopPropagation();
+            if (currentSlide > 0) {
+                currentSlide--;
+                renderSlide(currentSlide);
+            }
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            renderSlide(currentSlide);
+            closeMenu();
+        }
+
+        function closeMenu() {
+            document.getElementById('navMenu').classList.add('hidden');
+        }
+
+        function closeNotes() {
+            document.getElementById('notesPanel').classList.add('hidden');
+        }
+
+        // Initialize navigation menu
+        function initNavMenu() {
+            const navList = document.getElementById('navList');
+            navList.innerHTML = slides.map((slide, idx) => `
+                <button onclick="goToSlide(${idx})" class="w-full text-left p-4 rounded-lg transition-all duration-200 ${
+                    currentSlide === idx
+                        ? 'bg-cyan-500/20 border-l-4 border-cyan-400 text-white'
+                        : 'bg-slate-800/40 hover:bg-slate-800 text-gray-300 hover:text-white border-l-4 border-transparent'
+                }">
+                    <span class="text-sm text-cyan-400 font-mono">${idx + 1}</span>
+                    <p class="mt-1 text-sm">${slide.title}</p>
+                </button>
+            `).join('');
+        }
+
+        // Event listeners
+        document.getElementById('menuBtn').addEventListener('click', () => {
+            document.getElementById('navMenu').classList.toggle('hidden');
+            initNavMenu();
+        });
+
+        document.getElementById('notesBtn').addEventListener('click', () => {
+            document.getElementById('notesPanel').classList.toggle('hidden');
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            } else if (e.key === 'Escape') {
+                closeMenu();
+                closeNotes();
+            }
+        });
+
+        // Initialize
+        renderSlide(currentSlide);
+    </script>
+</body>
+</html>
